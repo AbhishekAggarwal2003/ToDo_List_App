@@ -21,4 +21,4 @@ A simple To-Do List web application built with Django. Users can create, update,
 Clone the repository to your local machine using:
 
 ```bash
-git clone https://github.com/AbhishekAggarwal2003/Todo_List_App.git
+git clone https://github.com/AbhishekAggarwal2003/ToDo_List_App.git
