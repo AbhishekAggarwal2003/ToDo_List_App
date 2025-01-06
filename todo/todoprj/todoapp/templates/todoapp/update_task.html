@@ -16,7 +16,10 @@
       <label for="task_name">Update Task Name</label>
       <input type="text" name="todo_name" id="task_name" placeholder="Enter new task name" value="{{ task.todo_name }}" required>
     </div>
-
+    <div class="input-box">
+        <label for="deadline">Set Deadline</label>
+        <input type="datetime-local" name="deadline" class="form-control" value="{{ task.deadline|date:'Y-m-d\TH:i' }}"/>
+      </div>
     <div class="input-box button">
       <input type="submit" value="Update Task">
     </div>

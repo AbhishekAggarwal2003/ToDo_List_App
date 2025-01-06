@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import todo
 from django.contrib.auth.decorators import login_required
+from datetime import timedelta
+from django.utils import timezone
 # Create your views here.
 
 @login_required
@@ -17,13 +19,20 @@ def home(request):
         
     if request.method == 'POST':
         task = request.POST.get('task')
+        deadline = request.POST.get('deadline')  # Capture the deadline from the form
+        
+        # Convert the deadline string to a DateTime object
+        if deadline:
+            deadline = timezone.datetime.strptime(deadline, "%Y-%m-%dT%H:%M")
+        else:
+            deadline = None
         priority = request.POST.get('priority')  # Get the selected priority
         # Check if the task already exists for the current user
         if todo.objects.filter(user=request.user, todo_name=task).exists():
             messages.error(request, 'Task already exists.')
             return redirect('home-page')
         
-        new_todo = todo(user=request.user, todo_name=task, priority=priority)  # Set priority
+        new_todo = todo(user=request.user, todo_name=task, priority=priority,deadline=deadline)
         new_todo.save()
 
     all_todos = todo.objects.filter(user=request.user)
@@ -100,7 +109,10 @@ def UpdateTask(request, task_name):
     if request.method == 'POST':
         # Get the updated task name from the form
         updated_task_name = request.POST.get('todo_name')
-
+        new_deadline = request.POST.get('deadline')
+        if new_deadline:
+            new_deadline = timezone.datetime.strptime(new_deadline, "%Y-%m-%dT%H:%M")
+        task.deadline = new_deadline
         # Update the task
         task.todo_name = updated_task_name
         task.save()
