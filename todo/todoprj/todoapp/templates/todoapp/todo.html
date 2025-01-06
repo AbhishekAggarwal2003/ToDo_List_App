@@ -13,24 +13,33 @@
             <div class="card-body p-4">
   
               <h4 class="text-center my-3 pb-3">To Do App</h4>
-  
-              <form method="POST" class="row row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2">
+              {% if messages %}
+              <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                  {{ message }}
+                {% endfor %}
+              </div>
+            {% endif %}
+              <form method="POST" class="d-flex justify-content-center align-items-center mb-4 pb-2">
                 {% csrf_token %}
-                <div class="col-12">
-                  <div class="form-outline">
+                <div class="form-outline me-2">
                     <input type="text" id="form1" class="form-control" name="task" placeholder="Enter a task here"/>
-                  </div>
                 </div>
-  
-                <div class="col-12">
-                  <button type="submit" class="btn btn-primary">Add Task</button>
+                <div class="form-outline me-2">
+                    <select name="priority" class="form-select" aria-label="Select Priority">
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
                 </div>
-              </form>
-              <a href="{% url 'logout' %}"><button style="background: firebrick; color: white;" type="submit" class="btn btn-primary">Logout</button></a>
+                <button type="submit" class="btn btn-primary">Add Task</button>
+            </form>
+              
               <table class="table mb-4">
                 <thead>
                   <tr>
                     <th scope="col">Todo item</th>
+                    <th scope="col">Priority</th>
                     <th scope="col">Status</th>
                     <th scope="col">Actions</th>
                   </tr>
@@ -39,6 +48,7 @@
                   {% for i in todos %}
                   <tr>
                     <td>{{i.todo_name}}</td>
+                    <td>{{i.get_priority_display}}</td>  <!-- Display the priority -->
 
                     {% if i.status == True %}
                       <td>Completed</td>
@@ -57,7 +67,7 @@
                   {% endfor %}
                 </tbody>
               </table>
-  
+              <a href="{% url 'logout' %}"><button style="background: firebrick; color: white;" type="submit" class="btn btn-primary">Logout</button></a>
             </div>
           </div>
         </div>

@@ -8,9 +8,22 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def home(request):
+    priority_filter = request.GET.get('priority', 'all')  # Get priority filter from URL
+
+    if priority_filter == 'all' or not priority_filter:
+        all_todos = todo.objects.filter(user=request.user)
+    else:
+        all_todos = todo.objects.filter(user=request.user, priority=priority_filter)
+        
     if request.method == 'POST':
         task = request.POST.get('task')
-        new_todo = todo(user=request.user, todo_name=task)
+        priority = request.POST.get('priority')  # Get the selected priority
+        # Check if the task already exists for the current user
+        if todo.objects.filter(user=request.user, todo_name=task).exists():
+            messages.error(request, 'Task already exists.')
+            return redirect('home-page')
+        
+        new_todo = todo(user=request.user, todo_name=task, priority=priority)  # Set priority
         new_todo.save()
 
     all_todos = todo.objects.filter(user=request.user)
